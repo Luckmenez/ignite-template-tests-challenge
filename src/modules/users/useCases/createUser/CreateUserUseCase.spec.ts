@@ -23,13 +23,13 @@ describe("Create User", () => {
 
   it("should not be able to crete the same user twice", () => {
     expect(async () => {
-      const user = await createUserUseCase.execute({
+      await createUserUseCase.execute({
         email:"test@email.com.br",
         name:"Test",
         password:"12345"
       })
 
-      const duplicatedUser = await createUserUseCase.execute({
+      await createUserUseCase.execute({
         email:"test@email.com.br",
         name:"Test",
         password:"12345"
