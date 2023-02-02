@@ -1,7 +1,6 @@
 
 import { AppError } from "../../../../shared/errors/AppError";
 import { InMemoryUsersRepository } from "../../../users/repositories/in-memory/InMemoryUsersRepository";
-import { AuthenticateUserUseCase } from "../../../users/useCases/authenticateUser/AuthenticateUserUseCase";
 import { CreateUserUseCase } from "../../../users/useCases/createUser/CreateUserUseCase";
 import { InMemoryStatementsRepository } from "../../repositories/in-memory/InMemoryStatementsRepository";
 import { GetBalanceUseCase } from "../getBalance/GetBalanceUseCase";
@@ -11,14 +10,12 @@ let createStatementUseCase: CreateStatementUseCase;
 let createUserUseCase: CreateUserUseCase;
 let inMemoryStatementsRepository: InMemoryStatementsRepository;
 let inMemoryUsersRepository: InMemoryUsersRepository;
-let authenticateUserUseCase: AuthenticateUserUseCase;
 let getBalanceUseCase: GetBalanceUseCase;
 
 describe("Get Balance", () => {
   beforeEach(() => {
     inMemoryStatementsRepository = new InMemoryStatementsRepository();
     inMemoryUsersRepository = new InMemoryUsersRepository()
-    authenticateUserUseCase = new AuthenticateUserUseCase(inMemoryUsersRepository)
     getBalanceUseCase = new GetBalanceUseCase(inMemoryStatementsRepository, inMemoryUsersRepository)
     createUserUseCase = new CreateUserUseCase(inMemoryUsersRepository)
     createStatementUseCase = new CreateStatementUseCase(inMemoryUsersRepository, inMemoryStatementsRepository)
@@ -34,22 +31,25 @@ describe("Get Balance", () => {
       password:"test",
       name:"test",
     })
-    const { id } = user;
+
+    let { id } = user;
+
     if(id === undefined){
       //type guard for undefined user;
-      return
+      id = "error"
     }
-      const statement = await createStatementUseCase.execute({
-        user_id: id,
-        amount: 2000,
-        description: "Test Description",
-        type: OperationType.DEPOSIT,
-      })
 
-      const balance = await getBalanceUseCase.execute({user_id: id})
+    const statement = await createStatementUseCase.execute({
+      user_id: id,
+      amount: 2000,
+      description: "Test Description",
+      type: OperationType.DEPOSIT,
+    })
 
-      expect(balance).not.toBe(undefined)
-      expect(balance).toHaveProperty("balance")
+    const balance = await getBalanceUseCase.execute({user_id: id})
+
+    expect(balance).not.toBe(undefined)
+    expect(balance).toHaveProperty("balance")
   })
 
   it("should be able to create a withdraw statement", async () => {
@@ -57,34 +57,38 @@ describe("Get Balance", () => {
       DEPOSIT = 'deposit',
       WITHDRAW = 'withdraw',
     }
+
     const user = await createUserUseCase.execute({
       email:"testwithdraw@test.com.br",
       password:"test",
       name:"test",
     })
-    const { id } = user;
+
+    let { id } = user;
+
     if(id === undefined){
       //type guard for undefined user;
-      return
+      id = "error"
     }
-      const depositStatement = await createStatementUseCase.execute({
-        user_id: id,
-        amount: 2000,
-        description: "Test Description",
-        type: OperationType.DEPOSIT,
-      })
 
-      const withdrawStatement = await createStatementUseCase.execute({
-        user_id: id,
-        amount: 500,
-        description: "Test Description",
-        type: OperationType.WITHDRAW,
-      })
+    const depositStatement = await createStatementUseCase.execute({
+      user_id: id,
+      amount: 2000,
+      description: "Test Description",
+      type: OperationType.DEPOSIT,
+    })
 
-      const balance = await getBalanceUseCase.execute({user_id: id})
+    const withdrawStatement = await createStatementUseCase.execute({
+      user_id: id,
+      amount: 500,
+      description: "Test Description",
+      type: OperationType.WITHDRAW,
+    })
 
-      expect(balance).not.toBe(undefined)
-      expect(balance.balance).toBe(1500)
+    const balance = await getBalanceUseCase.execute({user_id: id})
+
+    expect(balance).not.toBe(undefined)
+    expect(balance.balance).toBe(1500)
   })
 
   it("should not be able to create a withdraw statement bigger than actual balance", () => {
@@ -98,29 +102,31 @@ describe("Get Balance", () => {
         password:"test",
         name:"test",
       })
-      const { id } = user;
+
+      let { id } = user;
+
       if(id === undefined){
         //type guard for undefined user;
-        return
+        id = "error"
       }
-        const depositStatement = await createStatementUseCase.execute({
-          user_id: id,
-          amount: 2000,
-          description: "Test Description",
-          type: OperationType.DEPOSIT,
-        })
+      const depositStatement = await createStatementUseCase.execute({
+        user_id: id,
+        amount: 2000,
+        description: "Test Description",
+        type: OperationType.DEPOSIT,
+      })
 
-        const withdrawStatement = await createStatementUseCase.execute({
-          user_id: id,
-          amount: 2500,
-          description: "Test Description",
-          type: OperationType.WITHDRAW,
-        })
+      const withdrawStatement = await createStatementUseCase.execute({
+        user_id: id,
+        amount: 2500,
+        description: "Test Description",
+        type: OperationType.WITHDRAW,
+      })
 
-        const balance = await getBalanceUseCase.execute({user_id: id})
+      const balance = await getBalanceUseCase.execute({user_id: id})
 
-        expect(balance).not.toBe(undefined)
-        expect(balance.balance).toBe(1500)
+      expect(balance).not.toBe(undefined)
+      expect(balance.balance).toBe(1500)
     }).rejects.toBeInstanceOf(AppError)
   })
 })
