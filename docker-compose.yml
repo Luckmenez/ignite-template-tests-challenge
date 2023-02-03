@@ -6,7 +6,7 @@ services:
     container_name: fin_api
     restart: always
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=ignite
@@ -19,8 +19,8 @@ services:
       container_name: ignite_api
       restart: always
       ports:
-        - 3333:3333
-        - 9229:9229
+        - 3332:3332
+        - 9230:9230
       volumes:
         - .:/usr/app
       links:
