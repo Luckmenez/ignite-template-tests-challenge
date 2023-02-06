@@ -47,7 +47,6 @@ describe("Get Balance", () => {
 
     const balance = await getBalanceUseCase.execute({user_id: id})
 
-    console.log("alguma coisa", balance)
 
     expect(balance).not.toBe(undefined)
     expect(balance).toHaveProperty("balance")
