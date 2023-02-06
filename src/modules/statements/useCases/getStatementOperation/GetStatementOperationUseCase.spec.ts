@@ -52,10 +52,8 @@ describe("Get Statement", () => {
       statement_id = "error"
     }
 
-    console.log(depositStatement.id)
 
     const getStatement = await getStatementOperationUseCase.execute({user_id, statement_id})
 
-    console.log(getStatement)
   })
 })
