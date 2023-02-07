@@ -5,14 +5,13 @@ import createConnection from "../../../../database";
 
 let connection: Connection;
 describe("Create User Controller", () => {
-
-  beforeAll(async() => {
+  beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations()
   })
 
-  afterAll(async() => {
-    await connection.dropDatabase()
+  afterAll(async () => {
+    await connection.dropDatabase();
     await connection.close()
   })
 
@@ -29,13 +28,13 @@ describe("Create User Controller", () => {
   it("should not be able to create the same user twice", async () => {
     const responseUser = await request(app).post('/api/v1/users').send({
       name: "SuperTest",
-      email: "supertest@supertest.com.br",
+      email: "supertest1@supertest.com.br",
       password: "supertest"
     })
 
     const responseRepeatedUser = await request(app).post('/api/v1/users').send({
       name: "SuperTest",
-      email: "supertest@supertest.com.br",
+      email: "supertest1@supertest.com.br",
       password: "supertest"
     })
 

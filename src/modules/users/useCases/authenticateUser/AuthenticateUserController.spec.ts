@@ -2,12 +2,9 @@ import request from "supertest";
 import { Connection, createConnection } from "typeorm";
 import { app } from "../../../../app";
 
-
-
-
 let connection: Connection;
-describe("It should be able to Authenticate an user", () => {
 
+describe("It should be able to Authenticate an user", () => {
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations()

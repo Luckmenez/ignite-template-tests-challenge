@@ -19,12 +19,12 @@ describe("Show User Controller", () => {
   it('it should be able to show users profile', async () => {
     await request(app).post('/api/v1/users').send({
       name: "SuperTest2",
-      email: "supertest2@supertest.com.br",
+      email: "supertest2@supertestasdfas.com.br",
       password: "supertest2",
     })
 
     const authenticatedUser = await request(app).post('/api/v1/sessions').send({
-      email: "supertest2@supertest.com.br",
+      email: "supertest2@supertestasdfas.com.br",
       password: "supertest2",
     })
 
