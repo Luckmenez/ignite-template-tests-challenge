@@ -125,8 +125,6 @@ describe("Get Balance", () => {
 
       const balance = await getBalanceUseCase.execute({user_id: id})
 
-      expect(balance).not.toBe(undefined)
-      expect(balance.balance).toBe(1500)
     }).rejects.toBeInstanceOf(AppError)
   })
 })
